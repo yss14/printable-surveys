@@ -17,7 +17,6 @@ interface PaperFormatDimensions {
 
 const paperFormatMapping = new Map<PaperFormat, PaperFormatDimensions>();
 paperFormatMapping.set(PaperFormat.A4, { width: '210mm', height: '297mm', padding: '20mm', margin: '10mm auto' });
-console.log(paperFormatMapping);
 
 interface PageProps extends StyledComponentProps, Childable {
 	format?: PaperFormat;
@@ -25,8 +24,8 @@ interface PageProps extends StyledComponentProps, Childable {
 
 class PageComponent extends React.Component<PageProps> {
 	render() {
-		const { className, children, format } = this.props;
-		console.log(format);
+		const { className, children } = this.props;
+
 		return (
 			<div className={className}>
 				{children}
