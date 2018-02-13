@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import StyledComponentProps from '../types/StyledComponentProps';
 import * as PropTypes from 'prop-types';
 import SurveyElement from './SurveyElement';
+import { shuffle } from '../utils/array-shuffle';
 
 type OnInputClickEventHandler = (e: React.MouseEvent<HTMLDivElement>, selectedIndex: number) => void;
 
@@ -101,12 +102,13 @@ StyledMultipleChoiceOption.defaultProps = {
 };
 
 //MultipleChoice
-interface MultipleChoiceProps extends StyledComponentProps {
+export interface MultipleChoiceProps extends StyledComponentProps {
 	options: string[];
 	question: string;
 	hint?: string;
 	enableOtherOption?: boolean;
 	multipleAnswers?: boolean;
+	randomOrder?: boolean;
 }
 
 interface MultipleChoiceState {
@@ -135,13 +137,13 @@ class MultipleChoice extends React.Component<MultipleChoiceProps, MultipleChoice
 	}
 
 	render() {
-		const { className, options, question, hint, enableOtherOption } = this.props;
+		const { className, options, question, hint, enableOtherOption, randomOrder } = this.props;
 		const { selectedIndices } = this.state;
 
 		return (
 			<SurveyElement question={question} hint={hint}>
 				<form className={className}>
-					{options.map((option, idx) =>
+					{(randomOrder ? shuffle(options) : options).map((option, idx) =>
 						<StyledMultipleChoiceOption
 							text={option}
 							key={`multiple-choice-option-${idx}`}
@@ -172,13 +174,15 @@ StyledMultipleChoice.propTypes = {
 	enableOtherOption: PropTypes.bool.isRequired,
 	question: PropTypes.string.isRequired,
 	hint: PropTypes.string.isRequired,
-	multipleAnswers: PropTypes.bool.isRequired
+	multipleAnswers: PropTypes.bool.isRequired,
+	randomOrder: PropTypes.bool.isRequired
 };
 
 StyledMultipleChoice.defaultProps = {
 	enableOtherOption: false,
 	hint: '',
-	multipleAnswers: false
+	multipleAnswers: false,
+	randomOrder: false
 };
 
 export default StyledMultipleChoice;

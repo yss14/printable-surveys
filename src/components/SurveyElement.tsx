@@ -65,7 +65,7 @@ class SurveyElement extends React.Component<SurveyElementProps> {
 }
 
 const StyledSurveyElement = styled(SurveyElement) `
-	margin-bottom: 10px;
+	margin-bottom: 50px;
 `;
 
 export default StyledSurveyElement;

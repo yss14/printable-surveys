@@ -24,6 +24,7 @@
 		],
 		"jsdoc-format": true,
 		"jsx-no-lambda": false,
+		"jsx-curly-spacing": false,
 		"jsx-no-multiline-js": false,
 		"label-position": true,
 		"member-ordering": [
@@ -32,7 +33,6 @@
 			"static-before-instance",
 			"variables-before-functions"
 		],
-		"no-any": true,
 		"no-arg": true,
 		"no-bitwise": true,
 		"no-consecutive-blank-lines": true,
