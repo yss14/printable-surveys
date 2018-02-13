@@ -56,12 +56,13 @@ export interface LikertScaleProps extends StyledComponentProps {
 	from?: number;
 	to?: number;
 	step?: number;
+	labels?: string[];
 	randomInverse?: boolean;
 }
 
-const LikertScale: React.StatelessComponent<LikertScaleProps> = ({ className, question, hint, from, to, step, randomInverse }) => {
+const LikertScale: React.StatelessComponent<LikertScaleProps> = ({ className, question, hint, from, to, step, randomInverse, labels }) => {
 	if ((to - from) % step !== 0) {
-		throw new Error(`Error at LikertScala: Range from ${from} to ${to} is divisible by ${step}`);
+		throw new Error(`Error at LikertScale: Range from ${from} to ${to} is divisible by ${step}`);
 	}
 
 	let data: number[] = [];
@@ -73,12 +74,18 @@ const LikertScale: React.StatelessComponent<LikertScaleProps> = ({ className, qu
 		data = Math.round(Math.random()) === 1 ? data : data.reverse();
 	}
 
+	if (labels !== undefined && labels.length !== data.length) {
+		throw new Error('Error at LikertScale: Length of provided labels array does not fit range length');
+	}
+
+	labels = labels || data.map(d => d.toString());
+
 	return (
 		<SurveyElement question={question} hint={hint}>
 			<StyledLikertScaleList>
 				{data.map((d, idx) => (
 					<StyledLikertScaleItem key={idx} length={data.length}>
-						<StyledLikertScaleItemLabel>{d}</StyledLikertScaleItemLabel>
+						<StyledLikertScaleItemLabel>{labels[idx]}</StyledLikertScaleItemLabel>
 						<LikertScaleItemCheckbox />
 					</StyledLikertScaleItem>
 				))}
@@ -97,7 +104,8 @@ StyledLikertScale.propTypes = {
 	from: PropTypes.number.isRequired,
 	to: PropTypes.number.isRequired,
 	step: PropTypes.number.isRequired,
-	randomInverse: PropTypes.bool.isRequired
+	randomInverse: PropTypes.bool.isRequired,
+	labels: PropTypes.arrayOf(PropTypes.string)
 };
 
 StyledLikertScale.defaultProps = {

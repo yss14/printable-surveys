@@ -2,7 +2,7 @@ import * as React from 'react';
 import './App.css';
 import Page from './components/Page';
 import MultipleChoice, { MultipleChoiceProps } from './components/MultipleChoice';
-import LikertScale, { LikertScaleProps } from './components/LikertScala';
+import LikertScale, { LikertScaleProps } from './components/LikertScale';
 
 enum SurveyElementType {
 	MultipleChoice = 'MultipleChoice',
@@ -30,10 +30,11 @@ const survey: SurveyElement[] = [
 		type: SurveyElementType.LikertScale,
 		opts: {
 			question: 'Rate from 1 to 10',
-			from: 10,
-			to: 22,
-			step: 2,
-			randomInverse: true
+			from: 1,
+			to: 5,
+			step: 1,
+			randomInverse: true,
+			labels: ['Yeah!', 'OK', 'Meh', 'Nope', 'Fucking no!']
 		}
 	}
 ];
