@@ -137,11 +137,11 @@ class MultipleChoice extends React.Component<MultipleChoiceProps, MultipleChoice
 	}
 
 	render() {
-		const { className, options, question, hint, enableOtherOption, randomOrder } = this.props;
+		const { className, options, question, hint, enableOtherOption, randomOrder, multipleAnswers } = this.props;
 		const { selectedIndices } = this.state;
 
 		return (
-			<SurveyElement question={question} hint={hint}>
+			<SurveyElement question={question} hint={`${hint} ${multipleAnswers ? 'Multiple selections possible' : 'Only one selection possible'}`}>
 				<form className={className}>
 					{(randomOrder ? shuffle(options) : options).map((option, idx) =>
 						<StyledMultipleChoiceOption

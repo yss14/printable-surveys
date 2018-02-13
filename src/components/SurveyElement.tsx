@@ -35,6 +35,7 @@ const StyledHint = styled(Hint) `
 	padding-bottom: 10px;
 	font-size: 14px;
 	font-style: italic;
+	color: #7f8c8d;
 `;
 
 Question.propTypes = {
@@ -66,6 +67,7 @@ class SurveyElement extends React.Component<SurveyElementProps> {
 
 const StyledSurveyElement = styled(SurveyElement) `
 	margin-bottom: 50px;
+	overflow: auto;
 `;
 
 export default StyledSurveyElement;

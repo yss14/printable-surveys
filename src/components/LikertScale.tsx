@@ -5,11 +5,19 @@ import * as PropTypes from 'prop-types';
 import SurveyElement from './SurveyElement';
 import { Childable } from '../types/Childable';
 
-const LikertScaleItemCheckbox = styled.div`
-	height: 22px;
-    width: 22px;
-    background-color: #eee;
-    border-radius: 50%;
+interface LikertScaleItemCheckboxProps extends StyledComponentProps, Childable {
+	selfRated: boolean;
+}
+
+const LikertScaleItemCheckbox: React.StatelessComponent<LikertScaleItemCheckboxProps> = ({ selfRated, className, children }) => (
+	<div className={className}>{children}</div>
+);
+
+const StyledLikertScaleItemCheckbox = styled(LikertScaleItemCheckbox) `
+	height: ${props => props.selfRated ? 34 : 22}px;
+    width: ${props => props.selfRated ? 34 : 22}px;
+    background-color: ${props => props.selfRated ? 'white' : '#eee'};
+    border-radius: ${props => props.selfRated ? '8px' : '50%'};
 	border: 1px solid #2c3e50;
 	margin-left: auto;
 	margin-right: auto;
@@ -22,7 +30,6 @@ const LikertScaleItemLabel: React.StatelessComponent<StyledComponentProps & Chil
 
 const StyledLikertScaleItemLabel = styled(LikertScaleItemLabel) `
 	width: 100%;
-	height: 20px;
 	text-align: center;
 `;
 
@@ -30,6 +37,7 @@ const StyledLikertScaleList = styled.ul`
 	list-style: none;
 	margin: 0px;
 	padding: 0px;
+	overflow: auto;
 `;
 
 interface LikertScaleItem extends StyledComponentProps, Childable {
@@ -43,7 +51,6 @@ const LikertScaleItem: React.StatelessComponent<LikertScaleItem> = ({ length, cl
 const StyledLikertScaleItem = styled(LikertScaleItem) `
 	float: left;
 	width: ${props => 640 / props.length}px;
-	height: 30px;
 `;
 
 StyledLikertScaleItem.propTypes = {
@@ -58,35 +65,37 @@ export interface LikertScaleProps extends StyledComponentProps {
 	step?: number;
 	labels?: string[];
 	randomInverse?: boolean;
+	selfRated?: boolean;
 }
 
-const LikertScale: React.StatelessComponent<LikertScaleProps> = ({ className, question, hint, from, to, step, randomInverse, labels }) => {
+const LikertScale: React.StatelessComponent<LikertScaleProps> = ({ className, question, hint, from, to, step, randomInverse, labels, selfRated }) => {
 	if ((to - from) % step !== 0) {
 		throw new Error(`Error at LikertScale: Range from ${from} to ${to} is divisible by ${step}`);
 	}
 
-	let data: number[] = [];
-	for (let i = from; i <= to; i = i + step) {
-		data.push(i);
+	if (labels === undefined) {
+		for (let i = from; i <= to; i = i + step) {
+			labels.push(i.toString());
+		}
 	}
 
 	if (randomInverse) {
-		data = Math.round(Math.random()) === 1 ? data : data.reverse();
+		labels = Math.round(Math.random()) === 1 ? labels : labels.reverse();
 	}
-
-	if (labels !== undefined && labels.length !== data.length) {
-		throw new Error('Error at LikertScale: Length of provided labels array does not fit range length');
-	}
-
-	labels = labels || data.map(d => d.toString());
 
 	return (
 		<SurveyElement question={question} hint={hint}>
 			<StyledLikertScaleList>
-				{data.map((d, idx) => (
-					<StyledLikertScaleItem key={idx} length={data.length}>
-						<StyledLikertScaleItemLabel>{labels[idx]}</StyledLikertScaleItemLabel>
-						<LikertScaleItemCheckbox />
+				{labels.map((l, idx) => (
+					<StyledLikertScaleItem key={idx} length={labels.length}>
+						<StyledLikertScaleItemLabel>{l}</StyledLikertScaleItemLabel>
+					</StyledLikertScaleItem>
+				))}
+			</StyledLikertScaleList>
+			<StyledLikertScaleList>
+				{labels.map((l, idx) => (
+					<StyledLikertScaleItem key={idx} length={labels.length}>
+						<StyledLikertScaleItemCheckbox selfRated={selfRated} />
 					</StyledLikertScaleItem>
 				))}
 			</StyledLikertScaleList>
@@ -105,7 +114,8 @@ StyledLikertScale.propTypes = {
 	to: PropTypes.number.isRequired,
 	step: PropTypes.number.isRequired,
 	randomInverse: PropTypes.bool.isRequired,
-	labels: PropTypes.arrayOf(PropTypes.string)
+	labels: PropTypes.arrayOf(PropTypes.string),
+	selfRated: PropTypes.bool.isRequired
 };
 
 StyledLikertScale.defaultProps = {
@@ -113,7 +123,8 @@ StyledLikertScale.defaultProps = {
 	from: 1,
 	to: 10,
 	step: 1,
-	randomInverse: false
+	randomInverse: false,
+	selfRated: false
 };
 
 export default StyledLikertScale;
