@@ -1,4 +1,5 @@
 export enum SurveyElementTypeJSON {
 	MultipleChoice = 'MultipleChoice',
-	LikertScale = 'LikertScale'
+	LikertScale = 'LikertScale',
+	UserInput = 'UserInput'
 }
