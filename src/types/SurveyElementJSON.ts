@@ -6,4 +6,6 @@ import { UserInputProps } from '../components/UserInput';
 export interface SurveyElementJSON {
 	type: SurveyElementTypeJSON;
 	opts: MultipleChoiceProps | LikertScaleProps | UserInputProps;
+	block: any;
+	fixed?: boolean;
 }

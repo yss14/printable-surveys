@@ -44,6 +44,7 @@ const Page = styled(PageComponent) `
 		border-radius: 5px;
 		background: white;
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		position: relative;
 	}
 
 	@page {
@@ -51,11 +52,18 @@ const Page = styled(PageComponent) `
 		margin: 0;
 	}
 
+	@page:right{
+		@bottom-right {
+		  content: counter(page);
+		}
+	}
+
 	@media print {
 		html, body {
 			width: ${props => paperFormatMapping.get(props.format).width};
 			height: ${props => paperFormatMapping.get(props.format).height};
 		}
+
 		& {
 			margin: 0;
 			border: initial;

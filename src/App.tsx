@@ -7,6 +7,8 @@ import LikertScale, { LikertScaleProps } from './components/LikertScale';
 import survey from './survey-data';
 import { SurveyElementTypeJSON } from './types/SurveyElementTypeJSON';
 import UserInput, { UserInputProps } from './components/UserInput';
+import { SurveyElementJSON } from './types/SurveyElementJSON';
+import * as _ from 'lodash';
 
 interface AppState {
 	pageAdjusted: boolean;
@@ -17,6 +19,8 @@ class App extends React.Component<{}, AppState> {
 	private _surveyElementRefs: React.Component[];
 	private _pageRef: React.Component;
 
+	private _orderedSurvey: SurveyElementJSON[];
+
 	constructor(props: {}) {
 		super(props);
 
@@ -26,28 +30,30 @@ class App extends React.Component<{}, AppState> {
 		};
 
 		this._surveyElementRefs = new Array<React.Component>(survey.length);
+		this._orderedSurvey = [];
+	}
+
+	componentWillMount() {
+		//Sort and shuffle survey
+		let fixedElements: SurveyElementJSON[] = survey.filter(el => el.fixed !== undefined && el.fixed === true);
+
+		this._orderedSurvey = fixedElements.concat(
+			_.flatten(
+				_.map(
+					_.groupBy<SurveyElementJSON>(
+						survey.filter(el => el.fixed === undefined || el.fixed === false)
+							.sort((a, b) => b.block - a.block),
+						(el) => el.block),
+					(el => {
+						return _.shuffle(el);
+					}))
+			)
+		);
+
+		console.log(this._orderedSurvey);
 	}
 
 	componentDidMount() {
-		//Prepare list of react elements
-		/*const components = survey.map((surveyEl, idx) => {
-			switch (surveyEl.type) {
-				case SurveyElementTypeJSON.MultipleChoice: return <MultipleChoice key={idx} {...(surveyEl.opts as MultipleChoiceProps)} />;
-				case SurveyElementTypeJSON.LikertScale: return <LikertScale key={idx} {...(surveyEl.opts as LikertScaleProps)} />;
-				case SurveyElementTypeJSON.UserInput: return <UserInput key={idx} {...(surveyEl.opts as UserInputProps)} />;
-				default: return null;
-			}
-		});
-
-		this.setState({
-			...this.state,
-			surveyElments: components.map((c, idx) => {
-				return {
-					component: c,
-					page: idx === 0 ? 1 : -1
-				};
-			})
-		});*/
 		const pageDOM = ReactDOM.findDOMNode(this._pageRef);
 		const maxPageHeight = parseInt(window.getComputedStyle(pageDOM).getPropertyValue('height').replace('px', ''), 10)
 			- parseInt(window.getComputedStyle(pageDOM).getPropertyValue('padding-top').replace('px', ''), 10)
@@ -58,7 +64,7 @@ class App extends React.Component<{}, AppState> {
 
 		let newRenderPayload = new Map<number, JSX.Element[]>();
 
-		for (let i = 0; i < survey.length; i++) {
+		for (let i = 0; i < this._orderedSurvey.length; i++) {
 			const domEl = ReactDOM.findDOMNode(this._surveyElementRefs[i]);
 
 			let elStyle = window.getComputedStyle(domEl);
@@ -76,7 +82,7 @@ class App extends React.Component<{}, AppState> {
 				newRenderPayload.set(currentPageNumber, []);
 			}
 
-			newRenderPayload.get(currentPageNumber).push(this.getSurveyComponent(survey[i].type, survey[i].opts, `${currentPageNumber}-${i}`));
+			newRenderPayload.get(currentPageNumber).push(this.getSurveyComponent(this._orderedSurvey[i].type, this._orderedSurvey[i].opts, `${currentPageNumber}-${i}`));
 			currentPageUsedHeight += elHeight;
 		}
 
@@ -107,7 +113,7 @@ class App extends React.Component<{}, AppState> {
 			return (
 				<div>
 					<Page>
-						{survey.map((surveyEl, idx) => this.getSurveyComponent(surveyEl.type, surveyEl.opts, idx))}
+						{this._orderedSurvey.map((surveyEl, idx) => this.getSurveyComponent(surveyEl.type, surveyEl.opts, idx))}
 					</Page>
 					<Page ref={ref => this._pageRef = ref} />
 				</div>
