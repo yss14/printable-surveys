@@ -13,7 +13,7 @@ const LikertScaleItemCheckbox: React.StatelessComponent<LikertScaleItemCheckboxP
 	<div className={className}>{children}</div>
 );
 
-const StyledLikertScaleItemCheckbox = styled(LikertScaleItemCheckbox) `
+const StyledLikertScaleItemCheckbox = styled(LikertScaleItemCheckbox)`
 	height: ${props => props.selfRated ? 34 : 22}px;
     width: ${props => props.selfRated ? 34 : 22}px;
     background-color: ${props => props.selfRated ? 'white' : '#eee'};
@@ -28,7 +28,7 @@ const LikertScaleItemLabel: React.StatelessComponent<StyledComponentProps & Chil
 	<div className={className}>{children}</div>
 );
 
-const StyledLikertScaleItemLabel = styled(LikertScaleItemLabel) `
+const StyledLikertScaleItemLabel = styled(LikertScaleItemLabel)`
 	width: 100%;
 	text-align: center;
 `;
@@ -48,13 +48,15 @@ const LikertScaleItem: React.StatelessComponent<LikertScaleItem> = ({ length, cl
 	<li className={className}>{children}</li>
 );
 
-const StyledLikertScaleItem = styled(LikertScaleItem) `
+const StyledLikertScaleItem = styled(LikertScaleItem)`
 	float: left;
 	width: ${props => 640 / props.length}px;
 `;
 
 StyledLikertScaleItem.propTypes = {
 	length: PropTypes.number.isRequired,
+	children: PropTypes.arrayOf(PropTypes.element),
+	className: PropTypes.string
 };
 
 export interface LikertScaleProps extends StyledComponentProps {
@@ -103,7 +105,7 @@ const LikertScale: React.StatelessComponent<LikertScaleProps> = ({ className, qu
 	);
 };
 
-const StyledLikertScale = styled(LikertScale) `
+const StyledLikertScale = styled(LikertScale)`
 
 `;
 

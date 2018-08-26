@@ -58,7 +58,7 @@ class App extends React.Component<AppProps, AppState> {
 	}
 
 	componentDidMount() {
-		const pageDOM = ReactDOM.findDOMNode(this._pageRef);
+		const pageDOM = ReactDOM.findDOMNode(this._pageRef) as Element;
 		const maxPageHeight = parseInt(window.getComputedStyle(pageDOM).getPropertyValue('height').replace('px', ''), 10)
 			- parseInt(window.getComputedStyle(pageDOM).getPropertyValue('padding-top').replace('px', ''), 10)
 			- parseInt(window.getComputedStyle(pageDOM).getPropertyValue('padding-bottom').replace('px', ''), 10);
@@ -69,7 +69,7 @@ class App extends React.Component<AppProps, AppState> {
 		let newRenderPayload = new Map<number, JSX.Element[]>();
 
 		for (let i = 0; i < this._orderedSurvey.length; i++) {
-			const domEl = ReactDOM.findDOMNode(this._surveyElementRefs[i]);
+			const domEl = ReactDOM.findDOMNode(this._surveyElementRefs[i]) as Element;
 
 			let elStyle = window.getComputedStyle(domEl);
 			let elHeight = ['height', 'margin-top', 'margin-bottom', 'padding-top', 'padding-bottom']
