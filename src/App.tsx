@@ -4,7 +4,6 @@ import './App.css';
 import Page from './components/Page';
 import MultipleChoice, { MultipleChoiceProps } from './components/MultipleChoice';
 import LikertScale, { LikertScaleProps } from './components/LikertScale';
-import survey from './survey-data';
 import { SurveyElementTypeJSON } from './types/SurveyElementTypeJSON';
 import UserInput, { UserInputProps } from './components/UserInput';
 import { SurveyElementJSON } from './types/SurveyElementJSON';
@@ -15,13 +14,18 @@ interface AppState {
 	renderPayload: Map<number, JSX.Element[]>;
 }
 
-class App extends React.Component<{}, AppState> {
+interface AppProps {
+	survey: SurveyElementJSON[];
+	group: number;
+}
+
+class App extends React.Component<AppProps, AppState> {
 	private _surveyElementRefs: React.Component[];
 	private _pageRef: React.Component;
 
 	private _orderedSurvey: SurveyElementJSON[];
 
-	constructor(props: {}) {
+	constructor(props: AppProps) {
 		super(props);
 
 		this.state = {
@@ -29,11 +33,13 @@ class App extends React.Component<{}, AppState> {
 			renderPayload: new Map<number, JSX.Element[]>()
 		};
 
-		this._surveyElementRefs = new Array<React.Component>(survey.length);
+		this._surveyElementRefs = new Array<React.Component>(props.survey.length);
 		this._orderedSurvey = [];
 	}
 
 	componentWillMount() {
+		const { survey } = this.props;
+
 		//Sort and shuffle survey
 		let fixedElements: SurveyElementJSON[] = survey.filter(el => el.fixed !== undefined && el.fixed === true);
 
@@ -48,9 +54,7 @@ class App extends React.Component<{}, AppState> {
 						return _.shuffle(el);
 					}))
 			)
-		);
-
-		console.log(this._orderedSurvey);
+		).filter(el => (new Set(el.groups)).has(this.props.group));
 	}
 
 	componentDidMount() {

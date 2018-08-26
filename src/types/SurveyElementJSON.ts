@@ -7,5 +7,6 @@ export interface SurveyElementJSON {
 	type: SurveyElementTypeJSON;
 	opts: MultipleChoiceProps | LikertScaleProps | UserInputProps;
 	block: any;
+	groups: number[];
 	fixed?: boolean;
 }
